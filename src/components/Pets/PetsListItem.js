@@ -8,8 +8,23 @@ class PetsListItem extends Component {
         
     }
   
-deletePet = () =>{
-    console.log('deleting pet')
+deletePet = (event) =>{
+
+        const petToDelete = {
+                                deleteId: event.target.value
+                            }
+    console.log('deleting pet', petToDelete)
+        const response = fetch("/api/pets", {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: petToDelete
+        });
+        if (response.ok) {
+            console.log('delete pets worked');
+            this.getPets();
+        }
 }
 
 checkIn = () => {
@@ -25,7 +40,7 @@ checkIn = () => {
                 <td>{this.props.pet.breed}</td>
                 <td>{this.props.pet.color}</td>
                 <td>{this.props.pet.checked_in}</td>
-                <td><button onClick={this.deletePet} className="deleteButton">Remove Pet</button></td>
+                <td><button onClick={(event) => this.deletePet(event)} value={this.props.pet.id} className="deleteButton">Remove Pet</button></td>
                 <td><button onClick={this.checkIn} className="deleteButton">Check In Pet</button></td>
             </tr>
           

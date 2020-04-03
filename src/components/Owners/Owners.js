@@ -4,7 +4,10 @@ import OwnersListItem from '../Owners/OwnersListItem'
 
 class Owners extends Component {
     state={
-        ownerName:''
+        newOwner: {
+            ownerName: '',
+            num_pets: 0
+        }
     }
 
     componentDidMount=()=>{
@@ -20,20 +23,37 @@ class Owners extends Component {
       
       }
 
+    async postOwner (){
+        console.log(this.state.newOwner);
+        const newOwner = this.state.newOwner;
+        const response= await fetch("/api/owners", {
+            method: 'POST',
+            //we send this Content-Type to tell the server that it is recieving json
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newOwner)
+        });
+        if(response.ok){
+            console.log('post worked for owner');
+            this.getOwners();
+        }
+    }
+
     handleChangeFor = (event, typeofChange) => {
         console.log('in handleChangeFor OWNER:', this.state)
         this.setState({
-            ownerName: event.target.value
+            newOwner:{
+                ...this.state.newOwner,
+                ownerName: event.target.value
+                }
             },
         );
     }
 
     submitClick = () =>{
         console.log('on submitClick in OWNERS')
-        this.props.dispatch({
-            type:'SET_OWNERS',
-            payload:this.state
-        })
+       this.postOwner();
     }
 
     // deleteOwner = () => {
